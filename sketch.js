@@ -1,16 +1,59 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.sound.min.js"></script>
-    <script src="https://unpkg.com/ml5@0.4.1/dist/ml5.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <meta charset="utf-8" />
+let snake;
+let rez = 20;
+let food;
+let w;
+let h;
 
-  </head>
-  <body>
-    <script src="snake.js"></script>
-    <script src="sketch.js"></script>
-  </body>
-</html>
+
+function setup() {
+  createCanvas(400, 400);
+  w = floor(width / rez);
+  h = floor(height / rez);
+  frameRate(5);
+  snake = new Snake();
+  foodLocation();
+}
+
+function foodLocation() {
+  let x = floor(random(w));
+  let y = floor(random(h));
+  food = createVector(x, y);
+
+}
+
+function keyPressed() {
+  if (keyCode === LEFT_ARROW) {
+    snake.setDir(-1, 0);
+  } else if (keyCode === RIGHT_ARROW) {
+    snake.setDir(1, 0);
+  } else if (keyCode === DOWN_ARROW) {
+    snake.setDir(0, 1);
+  } else if (keyCode === UP_ARROW) {
+    snake.setDir(0, -1);
+  } else if (key == ' ') {
+    snake.grow();
+  }
+
+}
+
+function draw() {
+  scale(rez);
+  background(220);
+  if (snake.eat(food)) {
+    foodLocation();
+    snake.color = color(random(255), random(255), random(255));
+  }
+  snake.update();
+  snake.show();
+
+
+  if (snake.endGame()) {
+    print("END GAME");
+    background(255, 0, 0);
+    noLoop();
+  }
+
+  noStroke();
+  fill(255, 0, 0);
+  rect(food.x, food.y, 1, 1);
+}
